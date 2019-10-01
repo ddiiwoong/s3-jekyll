@@ -9,6 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update Bundler
+          command: gem install bundler
+      - run:
           name: Install Ruby dependencies
           command: bundle check || bundle install
       - run:
