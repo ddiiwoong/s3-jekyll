@@ -17,10 +17,10 @@ jobs:
           command: gem install bundler 
       - run:
           name: Install Ruby dependencies
-          command: bundle check || bundle install
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
       - run:
           name: Build the Jekyll site
-          command: bundle exec jekyll build
+          command: bundle exec jekyll build --path $BUNDLE_PATH
       - persist_to_workspace:
           root: ~/
           paths:
