@@ -5,7 +5,7 @@ jobs:
   build_prod:
     docker:
       - image: circleci/ruby:2.5.6
-    working_directory: ~/docs
+    working_directory: ~/repo/docs
     steps:
       - checkout
       - run:  
@@ -18,13 +18,13 @@ jobs:
           name: Build the Jekyll site
           command: bundle exec jekyll build
       - persist_to_workspace:
-          root: ~/docs
+          root: ~/repo/docs
           paths:
             - _site
   deploy_prod:
     docker:
       - image: circleci/python:2.7-jessie
-    working_directory: ~/docs
+    working_directory: ~/repo/docs
     steps:
       - checkout
       - attach_workspace:
