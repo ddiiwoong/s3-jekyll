@@ -1,0 +1,54 @@
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@1.0.11
+jobs:
+  build_prod:
+    docker:
+      - image: circleci/ruby:2.5.6
+    working_directory: ~/docs
+    steps:
+      - checkout
+      - run:  
+          name: Bundler Install  
+          command: gem install bundler 
+      - run:
+          name: Install Ruby dependencies
+          command: bundle check || bundle install
+      - run:
+          name: Build the Jekyll site
+          command: bundle exec jekyll build
+      - persist_to_workspace:
+          root: ~/docs
+          paths:
+            - _site
+  deploy_prod:
+    docker:
+      - image: circleci/python:2.7-jessie
+    working_directory: ~/docs
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/build
+      - aws-s3/sync:
+          from: /tmp/build/_site
+          to: 's3://resource-usermanual'
+          arguments: |
+            --delete
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build_prod:
+          name: build
+          context: TCL
+          filters:
+            branches:
+              only: master          
+      - deploy_prod:
+          name: deploy
+          context: TCL
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
