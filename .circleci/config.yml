@@ -12,15 +12,12 @@ jobs:
       BUNDLE_PATH: ~/repo/docs
     steps:
       - checkout
-      - run:  
-          name: Bundler Install  
-          command: gem install bundler 
       - run:
           name: Install Ruby dependencies
-          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+          command: bundle check || bundle install
       - run:
           name: Build the Jekyll site
-          command: bundle exec jekyll build --path $BUNDLE_PATH
+          command: bundle exec jekyll build
       - persist_to_workspace:
           root: ~/
           paths:
